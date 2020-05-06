@@ -1,0 +1,45 @@
+import pandas as pd
+import numpy as np
+
+from sklearn.model_selection import train_test_split
+
+raw_data=pd.read_csv('data.csv')
+data=raw_data[['house','car','wife','child','winner']]
+data.head()
+x=data[['house','car','wife','child']]
+y=data[['winner']]
+
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.3,random_state=20170816)
+
+from sklearn.preprocessing  import StandardScaler
+sc=StandardScaler()
+
+sc.fit(x_train)
+
+x_train_nor=sc.transform(x_train)
+x_test_nor=sc.transform(x_test)
+
+
+from sklearn.linear_model  import LogisticRegression
+lr=LogisticRegression()
+lr.fit(x_train_nor,y_train)
+
+# 印出係數
+print(lr.coef_)
+# 印出截距
+print(lr.intercept_ )
+
+y_prid=np.round(lr.predict_proba(x_test),3)
+print('y_prid',y_prid)
+y_prid=lr.predict(x_test)
+print('y_prid',y_prid)
+
+TestData=pd.read_csv('TestData.csv')
+TestData_nor=sc.transform(TestData)
+
+y_prid=np.round(lr.predict_proba(TestData_nor),3)
+print('y_prid',y_prid)
+y_prid=lr.predict(TestData_nor)
+print('y_prid',y_prid)
+
+
